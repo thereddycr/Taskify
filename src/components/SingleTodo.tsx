@@ -24,7 +24,7 @@ const SingleTodo: React.FC<Props> = ({
   const [editTodo, setEditTodo] = useState<string>(todo.todo);
 
   const todosData = TodoContext();
-  console.log(todosData, "todosData");
+  // console.log(todosData, "todosData");
 
   const handleDone = (id: number) => {
     // setTodos(
