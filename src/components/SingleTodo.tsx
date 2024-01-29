@@ -3,21 +3,29 @@ import { Todo } from "../modal";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete, MdDone } from "react-icons/md";
 import "./styles.css";
+import { TodoContext } from "../context/AppContext";
 
 interface Props {
   todo: Todo;
-  todos: Todo[];
+  // todos: Todo[];
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
 }
 
-const SingleTodo: React.FC<Props> = ({ todo, todos, setTodos }) => {
+const SingleTodo: React.FC<Props> = ({
+  todo,
+  // todos,
+  setTodos,
+}) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [edit, setEdit] = useState<boolean>(false);
   const [editTodo, setEditTodo] = useState<string>(todo.todo);
 
+  const todosData = TodoContext();
+  console.log(todosData, "todosData");
+
   const handleDone = (id: number) => {
     setTodos(
-      todos.map((todo) =>
+      todosData.map((todo) =>
         todo.id === id
           ? {
               ...todo,
@@ -29,13 +37,15 @@ const SingleTodo: React.FC<Props> = ({ todo, todos, setTodos }) => {
   };
 
   const handleDelete = (id: number) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+    setTodos(todosData.filter((todo) => todo.id !== id));
   };
 
   const handleEdit = (e: React.FormEvent, id: number) => {
     e.preventDefault();
     setTodos(
-      todos.map((todo) => (todo.id === id ? { ...todo, todo: editTodo } : todo))
+      todosData.map((todo) =>
+        todo.id === id ? { ...todo, todo: editTodo } : todo
+      )
     );
     setEdit(false);
   };
