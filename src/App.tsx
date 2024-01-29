@@ -1,31 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useReducer } from "react";
 import "./App.css";
 import InputField from "./components/InputField";
-import { Todo } from "./modal";
 import TodoList from "./components/TodoList";
-import { AppContext } from "./context/AppContext";
+import { Context } from "./context/Context";
+import { TodoReducer } from "./context/Reducers";
 
 const App: React.FC = () => {
   const [todo, setTodo] = useState<string>("");
-  const [todos, setTodos] = useState<Todo[]>([]);
+  // const [todos, setTodos] = useState<Todo[]>([]);
+
+  const [state, dispatch] = useReducer(TodoReducer, []);
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault(); //to avoid refresh or rerender the browser
     if (todo) {
-      setTodos([...todos, { id: Date.now(), todo, isDone: false }]);
+      // setTodos([...todos, { id: Date.now(), todo, isDone: false }]);
+      dispatch({
+        type: "ADD_TODO",
+        payload: todo,
+      });
       setTodo("");
     }
   };
   return (
     <div className="App">
-      <AppContext.Provider value={todos}>
+      <Context.Provider
+        //  value={todos}
+        value={state}
+      >
         <span className="heading">Taskify</span>
         <InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd} />
         <TodoList
           //  todos={todos}
-          setTodos={setTodos}
+          // setTodos={setTodos}
+          dispatch={dispatch}
         />
-      </AppContext.Provider>
+      </Context.Provider>
     </div>
   );
 };

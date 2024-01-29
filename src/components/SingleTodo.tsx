@@ -3,18 +3,21 @@ import { Todo } from "../modal";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete, MdDone } from "react-icons/md";
 import "./styles.css";
-import { TodoContext } from "../context/AppContext";
+import { TodoContext } from "../context/Context";
+import { Actions } from "../context/Reducers";
 
 interface Props {
   todo: Todo;
   // todos: Todo[];
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+  // setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+  dispatch: React.Dispatch<Actions>;
 }
 
 const SingleTodo: React.FC<Props> = ({
   todo,
   // todos,
-  setTodos,
+  // setTodos,
+  dispatch,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [edit, setEdit] = useState<boolean>(false);
@@ -24,29 +27,41 @@ const SingleTodo: React.FC<Props> = ({
   console.log(todosData, "todosData");
 
   const handleDone = (id: number) => {
-    setTodos(
-      todosData.map((todo) =>
-        todo.id === id
-          ? {
-              ...todo,
-              isDone: !todo.isDone,
-            }
-          : todo
-      )
-    );
+    // setTodos(
+    //   todosData.map((todo) =>
+    //     todo.id === id
+    //       ? {
+    //           ...todo,
+    //           isDone: !todo.isDone,
+    //         }
+    //       : todo
+    //   )
+    // );
+    dispatch({
+      type: "DONE_TODO",
+      payload: id,
+    });
   };
 
   const handleDelete = (id: number) => {
-    setTodos(todosData.filter((todo) => todo.id !== id));
+    // setTodos(todosData.filter((todo) => todo.id !== id));
+    dispatch({
+      type: "REMOVE_TODO",
+      payload: id,
+    });
   };
 
   const handleEdit = (e: React.FormEvent, id: number) => {
     e.preventDefault();
-    setTodos(
-      todosData.map((todo) =>
-        todo.id === id ? { ...todo, todo: editTodo } : todo
-      )
-    );
+    // setTodos(
+    //   todosData.map((todo) =>
+    //     todo.id === id ? { ...todo, todo: editTodo } : todo
+    //   )
+    // );
+    dispatch({
+      type: "EDIT_TODO",
+      payload: { id, editTodo },
+    });
     setEdit(false);
   };
 
