@@ -1,14 +1,22 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import { useTodoContext } from "../context/Context";
 import "./styles.css";
 
-interface Props {
-  todo: string;
-  setTodo: React.Dispatch<React.SetStateAction<string>>;
-  handleAdd: (e: React.FormEvent) => void;
-}
-
-const InputField: React.FC<Props> = ({ todo, setTodo, handleAdd }) => {
+const InputField: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const { dispatch } = useTodoContext();
+  const [todo, setTodo] = useState<string>("");
+
+  const handleAdd = (e: React.FormEvent) => {
+    e.preventDefault(); //to avoid refresh or rerender the browser
+    if (todo) {
+      dispatch({
+        type: "ADD_TODO",
+        payload: todo,
+      });
+      setTodo("");
+    }
+  };
   return (
     <form
       className="input"

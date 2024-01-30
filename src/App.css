@@ -15,8 +15,30 @@
   font-size: 40px;
   margin: 30px 0;
   color: white;
-  z-index: 1;
+  position: relative;
   text-align: center;
+  font-family: "Neucha", cursive;
+  background-color: transparent;
+  border: none;
+}
+
+.heading:hover .clearMessage {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.clearMessage {
+  position: absolute;
+  bottom: -30px;
+  left: 100%;
+  transform: translateX(-60%);
+  background-color: #fff;
+  color: #2f74c0;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
 }
 
 @media (max-width: 800px) {

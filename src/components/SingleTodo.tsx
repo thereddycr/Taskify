@@ -2,62 +2,21 @@ import React, { useState, useEffect, useRef } from "react";
 import { Todo } from "../modal";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete, MdDone } from "react-icons/md";
+import { useTodoContext } from "../context/Context";
 import "./styles.css";
-import { TodoContext } from "../context/Context";
-import { Actions } from "../context/Reducers";
 
 interface Props {
   todo: Todo;
-  // todos: Todo[];
-  // setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
-  dispatch: React.Dispatch<Actions>;
 }
 
-const SingleTodo: React.FC<Props> = ({
-  todo,
-  // todos,
-  // setTodos,
-  dispatch,
-}) => {
+const SingleTodo: React.FC<Props> = ({ todo }) => {
+  const { dispatch } = useTodoContext();
   const inputRef = useRef<HTMLInputElement>(null);
   const [edit, setEdit] = useState<boolean>(false);
   const [editTodo, setEditTodo] = useState<string>(todo.todo);
 
-  const todosData = TodoContext();
-  // console.log(todosData, "todosData");
-
-  const handleDone = (id: number) => {
-    // setTodos(
-    //   todosData.map((todo) =>
-    //     todo.id === id
-    //       ? {
-    //           ...todo,
-    //           isDone: !todo.isDone,
-    //         }
-    //       : todo
-    //   )
-    // );
-    dispatch({
-      type: "DONE_TODO",
-      payload: id,
-    });
-  };
-
-  const handleDelete = (id: number) => {
-    // setTodos(todosData.filter((todo) => todo.id !== id));
-    dispatch({
-      type: "REMOVE_TODO",
-      payload: id,
-    });
-  };
-
   const handleEdit = (e: React.FormEvent, id: number) => {
     e.preventDefault();
-    // setTodos(
-    //   todosData.map((todo) =>
-    //     todo.id === id ? { ...todo, todo: editTodo } : todo
-    //   )
-    // );
     dispatch({
       type: "EDIT_TODO",
       payload: { id, editTodo },
@@ -65,12 +24,38 @@ const SingleTodo: React.FC<Props> = ({
     setEdit(false);
   };
 
+  const handleDelete = (id: number) => {
+    if (edit) {
+      console.log("on edit mode cannot be called");
+      return;
+    }
+    dispatch({
+      type: "REMOVE_TODO",
+      payload: id,
+    });
+  };
+
+  const handleDone = (id: number) => {
+    if (edit) {
+      console.log("on edit mode cannot be called");
+      return;
+    }
+    dispatch({
+      type: "DONE_TODO",
+      payload: id,
+    });
+  };
+
   useEffect(() => {
     inputRef.current?.focus();
   }, [edit]);
 
   return (
-    <form className="todos__single" onSubmit={(e) => handleEdit(e, todo.id)}>
+    <form
+      key={todo.id}
+      className="todos__single"
+      onSubmit={(e) => handleEdit(e, todo.id)}
+    >
       {edit ? (
         <input
           ref={inputRef}
@@ -99,12 +84,16 @@ const SingleTodo: React.FC<Props> = ({
         >
           <CiEdit />
         </span>
-        <span className="icon" onClick={() => handleDelete(todo.id)}>
-          <MdDelete />
-        </span>
-        <span className="icon" onClick={() => handleDone(todo.id)}>
-          <MdDone />
-        </span>
+        {!edit && (
+          <>
+            <span className="icon" onClick={() => handleDelete(todo.id)}>
+              <MdDelete />
+            </span>
+            <span className="icon" onClick={() => handleDone(todo.id)}>
+              <MdDone />
+            </span>
+          </>
+        )}
       </div>
     </form>
   );

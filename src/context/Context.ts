@@ -1,14 +1,19 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, Dispatch } from "react";
 import { Todo } from "../modal";
+import { Actions } from "./Reducers";
 
-export const Context = createContext<Todo[] | []>([]);
+interface ContextProps {
+  state: Todo[];
+  dispatch: Dispatch<Actions>;
+}
 
-export function TodoContext() {
-  const todos = useContext(Context);
+export const TodoContext = createContext<ContextProps | undefined>(undefined);
 
-  if (todos && todos.length === 0) {
-    console.log("Todo context is empty or AppContext is not initialized");
-    return [];
+export function useTodoContext() {
+  const context = useContext(TodoContext);
+  if (!context) {
+    console.log("useTodoContext must be used within a TodoContextProvider");
+    throw new Error("useTodoContext must be used within a TodoContextProvider");
   }
-  return todos;
+  return context;
 }

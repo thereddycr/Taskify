@@ -4,7 +4,8 @@ export type Actions =
   | { type: "ADD_TODO"; payload: string }
   | { type: "EDIT_TODO"; payload: EditTodo }
   | { type: "REMOVE_TODO"; payload: number }
-  | { type: "DONE_TODO"; payload: number };
+  | { type: "DONE_TODO"; payload: number }
+  | { type: "CLEAR_ALL" };
 
 type EditTodo = {
   id: number;
@@ -30,6 +31,8 @@ export const TodoReducer = (state: Todo[], action: Actions) => {
       return state.map((todo) =>
         todo.id === action.payload ? { ...todo, isDone: !todo.isDone } : todo
       );
+    case "CLEAR_ALL":
+      return [];
     default:
       return state;
   }

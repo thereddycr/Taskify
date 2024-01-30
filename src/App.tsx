@@ -1,41 +1,38 @@
-import React, { useState, useReducer } from "react";
-import "./App.css";
+import React, { useState, useEffect, useReducer } from "react";
 import InputField from "./components/InputField";
 import TodoList from "./components/TodoList";
-import { Context } from "./context/Context";
+import { TodoContext } from "./context/Context";
 import { TodoReducer } from "./context/Reducers";
+import "./App.css";
 
 const App: React.FC = () => {
-  const [todo, setTodo] = useState<string>("");
-  // const [todos, setTodos] = useState<Todo[]>([]);
+  const initialData = JSON.parse(localStorage.getItem("@userTodo") || "[]");
+  const [state, dispatch] = useReducer(TodoReducer, initialData);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [state, dispatch] = useReducer(TodoReducer, []);
+  useEffect(() => {
+    localStorage.setItem("@userTodo", JSON.stringify(state));
+  }, [state]);
 
-  const handleAdd = (e: React.FormEvent) => {
-    e.preventDefault(); //to avoid refresh or rerender the browser
-    if (todo) {
-      // setTodos([...todos, { id: Date.now(), todo, isDone: false }]);
-      dispatch({
-        type: "ADD_TODO",
-        payload: todo,
-      });
-      setTodo("");
-    }
+  const handleClear = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      localStorage.removeItem("@userTodo");
+      dispatch({ type: "CLEAR_ALL" });
+      setIsLoading(false);
+    }, 500);
   };
+
   return (
     <div className="App">
-      <Context.Provider
-        //  value={todos}
-        value={state}
-      >
-        <span className="heading">Taskify</span>
-        <InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd} />
-        <TodoList
-          //  todos={todos}
-          // setTodos={setTodos}
-          dispatch={dispatch}
-        />
-      </Context.Provider>
+      <TodoContext.Provider value={{ state, dispatch }}>
+        <button className="heading" onClick={handleClear}>
+          {isLoading ? "Clearing..." : "Taskify"}
+          <span className="clearMessage">Clear Todos</span>
+        </button>
+        <InputField />
+        <TodoList />
+      </TodoContext.Provider>
     </div>
   );
 };
