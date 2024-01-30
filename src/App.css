@@ -3,12 +3,12 @@
 .App {
   display: flex;
   width: 100vw;
-  /* height: 100vh; */
+  height: 100vh;
   flex-direction: column;
   align-items: center;
   background-color: #2f74c0;
   font-family: "Neucha", cursive;
-  padding-bottom: 50px;
+  padding-bottom: 60px;
 }
 
 .heading {
