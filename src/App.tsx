@@ -28,7 +28,9 @@ const App: React.FC = () => {
       <TodoContext.Provider value={{ state, dispatch }}>
         <button className="heading" onClick={handleClear}>
           {isLoading ? "Clearing..." : "Taskify"}
-          <span className="clearMessage">Clear Todos</span>
+          <span className="clearMessage">
+            {isLoading ? "Clearing..." : "Clear Todos"}
+          </span>
         </button>
         <InputField />
         <TodoList />

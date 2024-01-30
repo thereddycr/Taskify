@@ -13,6 +13,7 @@ const SingleTodo: React.FC<Props> = ({ todo }) => {
   const { dispatch } = useTodoContext();
   const inputRef = useRef<HTMLInputElement>(null);
   const [edit, setEdit] = useState<boolean>(false);
+  
   const [editTodo, setEditTodo] = useState<string>(todo.todo);
 
   const handleEdit = (e: React.FormEvent, id: number) => {
